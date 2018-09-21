@@ -18,8 +18,7 @@
 
 lib_NAMES = bsp
 
-bsp_SRCS = ${notdir ${wildcard ${BSP_DIR}/${MCU_SRC_DIR}/*.c}}
-$(info ${bsp_SRCS})
+bsp_SRCS = ${notdir ${wildcard ${BSP_DIR}/${BSP}/*.c}}
 
 bsp_CPPFLAGS = -I${INC_DIR} -I${LANG_DIR}/include
 bsp_CFLAGS   =
@@ -27,5 +26,5 @@ bsp_LDFLAGS  =
 
 include ${MAKE_DIR}/cupkee.ruls.mk
 
-VPATH = ${BSP_DIR}/${MCU_SRC_DIR}
+VPATH = ${BSP_DIR}/${BSP}
 

@@ -24,8 +24,14 @@
 ## SOFTWARE.
 ##
 
+-include board.mk
+
 ifeq (${CPU},)
 $(info "Target processor not specified...")
+endif
+
+ifeq (${BSP},)
+$(info "Target bsp not specified...")
 endif
 
 # Define default target processor
@@ -38,6 +44,7 @@ else
 MAIN_DIR = ${PWD}
 endif
 
+export BSP
 export BASE_DIR
 export MAIN_DIR
 export MAKE_DIR = ${BASE_DIR}/make
@@ -66,8 +73,18 @@ export MOD_BUILD_DIR = ${BUILD_DIR}/modules
 export LANG_BUILD_DIR = ${BUILD_DIR}/lang
 export BOOT_ADDR
 
+ifeq (${FRAMEWORK},atom)
+all: atom
+	@printf "OK\n"
+else
+ifeq (${FRAMEWORK},ogin)
+all: ogin
+	@printf "OK\n"
+else
 all: test
 	@printf "ok\n"
+endif
+endif
 
 setup:
 	git pull

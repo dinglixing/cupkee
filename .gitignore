@@ -14,3 +14,4 @@ doc/
 build/
 openocd
 do.sh
+board.mk

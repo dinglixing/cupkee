@@ -19,4 +19,3 @@
 ARCH = cortex-m3
 MCU  = stm32f103ze
 
-MCU_SRC_DIR = stm32f1xx
