@@ -408,42 +408,6 @@ int cupkee_pin_wave_update(int pin, uint32_t first)
     }
 }
 
-int cupkee_pin_wave_set(int pin, int start, uint32_t first, uint32_t second)
-{
-    pin_data_t *pdata;
-
-    if (!pin_is_valid(pin)) {
-        return -CUPKEE_EINVAL;
-    }
-
-    if (first == 0) {
-        cupkee_pin_set(pin, !start);
-        return 0;
-    }
-
-    if (second == 0) {
-        cupkee_pin_set(pin, start);
-        return 0;
-    }
-
-    pdata = pin_get_data(pin);
-    if (!pdata) {
-        return -CUPKEE_ERESOURCE;
-    }
-
-    if (list_is_empty(&pdata->link)) {
-        cupkee_pin_set(pin, start);
-        return pin_wave_start(pin, pdata, first, second, NULL, NULL);
-    } else {
-        pdata->wave_period[0] = first;
-        pdata->wave_ticks[0] = cupkee_auxticks_of(first);
-        pdata->wave_period[1] = second;
-        pdata->wave_ticks[1] = cupkee_auxticks_of(second);
-
-        return 0;
-    }
-}
-
 int cupkee_pin_wave_stop(int pin, int v)
 {
     pin_data_t *pdata;
@@ -469,6 +433,39 @@ int cupkee_pin_wave_stop(int pin, int v)
     hw_gpio_set(BANK_OF(pin), PORT_OF(pin), v);
 
     return 0;
+}
+
+int cupkee_pin_wave_set(int pin, int start, uint32_t first, uint32_t second)
+{
+    pin_data_t *pdata;
+
+    if (first == 0) {
+        return cupkee_pin_wave_stop(pin, !start);
+    } else
+    if (second == 0) {
+        return cupkee_pin_wave_stop(pin, start);
+    }
+
+    if (!pin_is_valid(pin)) {
+        return -CUPKEE_EINVAL;
+    }
+
+    pdata = pin_get_data(pin);
+    if (!pdata) {
+        return -CUPKEE_ERESOURCE;
+    }
+
+    if (list_is_empty(&pdata->link)) {
+        cupkee_pin_set(pin, start);
+        return pin_wave_start(pin, pdata, first, second, NULL, NULL);
+    } else {
+        pdata->wave_period[0] = first;
+        pdata->wave_ticks[0] = cupkee_auxticks_of(first);
+        pdata->wave_period[1] = second;
+        pdata->wave_ticks[1] = cupkee_auxticks_of(second);
+
+        return 0;
+    }
 }
 
 int cupkee_pin_listen(int pin, int events, cupkee_callback_t handler, void *entry)
